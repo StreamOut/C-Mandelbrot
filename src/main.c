@@ -3,8 +3,9 @@
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
+#include <GL/glu.h>
 
-void algo3(int width, int height, int iterationMax, GLFWwindow* window){
+void algo3(int width, int height, int iterationMax){
 
   float x1 = -2.1;
   float x2 = 0.6;
@@ -40,7 +41,7 @@ void algo3(int width, int height, int iterationMax, GLFWwindow* window){
                  glVertex2i(x,y);
               glEnd();
               // drawColorPixel(d3.rgb(x,y,i), x, y, draw);
-              printf("x : %d y : %d \n",x,y);
+              // printf("x : %d y : %d \n",x,y);
             }
           else {
             glBegin(GL_POINTS);
@@ -54,7 +55,7 @@ void algo3(int width, int height, int iterationMax, GLFWwindow* window){
     }
 }
 
-void initWindow(GLFWwindow* window){
+int initWindow(GLFWwindow* window){
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -79,7 +80,7 @@ void initWindow(GLFWwindow* window){
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
         gluOrtho2D( 0.0, 640.0, 480.0,0.0 );
-        algo3(640, 480, 500, window);
+        algo3(640, 480, 500);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -88,10 +89,17 @@ void initWindow(GLFWwindow* window){
     }
 
     glfwTerminate();
+    return 0;
 }
 
 int main (int argc, char *argv[]){
-    GLFWwindow* window;
+    if(argc != 1){
+      printf("Aucun argument n'est necessaire\nLes arguments suivant seront ignorés : \n" );
+      for (int i = 1; i < argc; i++) {
+        printf("\t - %s\n",argv[i]);
+      }
+    }
+    GLFWwindow* window = NULL;
     initWindow(window);
 
     return 0;
