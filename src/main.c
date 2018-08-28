@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void algo3(int width, int height, int iterationMax, int draw){
+#define GLFW_DLL
+#include <GLFW/glfw3.h>
+
+void algo3(int width, int height, int iterationMax, GLFWwindow* window){
 
   float x1 = -2.1;
   float x2 = 0.6;
@@ -31,16 +34,65 @@ void algo3(int width, int height, int iterationMax, int draw){
             }    while (z_r*z_r + z_i*z_i < 4 && i < iterationMax);
 
           if (i == iterationMax){
+              glBegin(GL_POINTS);
+                 // glColor3f(255,255,255);
+                 glColor3ub(x,y,i);
+                 glVertex2i(x,y);
+              glEnd();
               // drawColorPixel(d3.rgb(x,y,i), x, y, draw);
               printf("x : %d y : %d \n",x,y);
             }
           else {
+            glBegin(GL_POINTS);
+               // glColor3f(255,255,255);
+               glColor3ub(0,0,i);
+               glVertex2i(x,y);
+            glEnd();
             // drawColorPixel(d3.rgb(0,0 , i*255/iterationMax), x, y, draw);
           }
       }
     }
 }
 
+void initWindow(GLFWwindow* window){
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
+
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
+
+    /* Loop until the user closes the window */
+    while (!glfwWindowShouldClose(window))
+    {
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        gluOrtho2D( 0.0, 640.0, 480.0,0.0 );
+        algo3(640, 480, 500, window);
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+}
+
 int main (int argc, char *argv[]){
-  algo3(240, 240, 50, 0);
+    GLFWwindow* window;
+    initWindow(window);
+
+    return 0;
 }
