@@ -5,21 +5,21 @@
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
 
-void algo3(int width, int height, int iterationMax){
+void algo3(int min_width, int min_height, int max_width, int max_height, int iterationMax){
 
   float x1 = -2.1;
   float x2 = 0.6;
   float y1 = -1.2;
   float y2 = 1.2;
-  float image_x = width;
-  float image_y = height;
+  float image_x = max_width;
+  float image_y = max_height;
 
   // on calcule la taille de l'image :
   float zoom_x = image_x/(x2 - x1);
   float zoom_y = image_y/(y2 - y1);
 
-  for ( int x = 0 ;x < image_x ; x++){
-      for(int y = 0; y < image_y; y++){
+  for ( int x = min_width ;x < image_x ; x++){
+      for(int y = min_height; y < image_y; y++){
           float c_r = x / zoom_x + x1;
           float c_i = y / zoom_y + y1;
           float z_r = 0;
@@ -37,7 +37,7 @@ void algo3(int width, int height, int iterationMax){
           if (i == iterationMax){
               glBegin(GL_POINTS);
                  // glColor3f(255,255,255);
-                 glColor3ub(x,y,i);
+                 glColor3ub(x,y,0);
                  glVertex2i(x,y);
               glEnd();
               // drawColorPixel(d3.rgb(x,y,i), x, y, draw);
@@ -55,6 +55,17 @@ void algo3(int width, int height, int iterationMax){
     }
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    // printf("Key : %d == %d \n", key,GLFW_KEY_E);
+    if (key == GLFW_KEY_E && action == GLFW_PRESS){
+      printf("oki\n");
+        glClear(GL_COLOR_BUFFER_BIT);
+        algo3(0, 0, 640, 480, 500);
+        glFlush();
+      }
+}
+
 int initWindow(GLFWwindow* window){
     /* Initialize the library */
     if (!glfwInit())
@@ -70,17 +81,16 @@ int initWindow(GLFWwindow* window){
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    gluOrtho2D( 0.0, 640.0, 480.0,0.0 );
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glfwSetKeyCallback(window, &key_callback);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        glMatrixMode( GL_PROJECTION );
-        glLoadIdentity();
-        gluOrtho2D( 0.0, 640.0, 480.0,0.0 );
-        algo3(640, 480, 500);
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
